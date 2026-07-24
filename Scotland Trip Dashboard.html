@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scotland 2026 — Trip Dashboard</title>
+<style>
+  :root{
+    --ink:#20291f;
+    --paper:#faf7f0;
+    --card:#ffffff;
+    --green:#2f4d3a;
+    --green-dark:#1d3226;
+    --heather:#6b4e71;
+    --gold:#b8863b;
+    --stone:#7c8577;
+    --line:#e2ddd0;
+    --nature:#2f6b4f;
+    --historic:#8a5a2b;
+    --food:#7a3b52;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  header{
+    background:linear-gradient(135deg,var(--green-dark),var(--green));
+    color:#f4f1e6;
+    padding:28px 32px 22px;
+  }
+  header h1{
+    margin:0 0 4px;
+    font-size:1.7rem;
+    letter-spacing:.3px;
+  }
+  header p{
+    margin:0;
+    color:#d9e2d6;
+    font-size:.95rem;
+  }
+  .tabs{
+    display:flex;
+    gap:4px;
+    padding:0 32px;
+    background:var(--green-dark);
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    appearance:none;
+    border:none;
+    background:transparent;
+    color:#cdd8c8;
+    padding:12px 18px;
+    font-size:.92rem;
+    font-weight:600;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:.15s;
+  }
+  .tab-btn:hover{color:#fff;}
+  .tab-btn.active{
+    color:#fff;
+    border-bottom:3px solid var(--gold);
+    background:rgba(255,255,255,.06);
+  }
+  main{
+    max-width:1180px;
+    margin:0 auto;
+    padding:26px 24px 60px;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .note{
+    background:#f1ece0;
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    padding:10px 14px;
+    border-radius:6px;
+    font-size:.86rem;
+    color:#5a5142;
+    margin-bottom:20px;
+  }
+
+  /* Master schedule */
+  .segment-heading{
+    margin:26px 0 10px;
+    font-size:1.05rem;
+    color:var(--green-dark);
+    border-bottom:2px solid var(--green);
+    padding-bottom:5px;
+  }
+  .segment-heading:first-child{margin-top:0;}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  th,td{
+    text-align:left;
+    padding:9px 12px;
+    font-size:.87rem;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  th{
+    background:#eef1e9;
+    color:var(--green-dark);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f7f5ec;}
+  .free-chip{
+    display:inline-block;
+    font-size:.68rem;
+    font-weight:700;
+    padding:2px 7px;
+    border-radius:20px;
+    margin:1px 3px 1px 0;
+    background:#e7f0e5;
+    color:var(--nature);
+  }
+  .free-chip.evening{background:#f1e7ee;color:var(--food);}
+
+  /* Free time finder */
+  .ft-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .ft-date{
+    min-width:118px;
+    font-weight:700;
+    color:var(--green-dark);
+    font-size:.85rem;
+  }
+  .ft-date span{
+    display:block;
+    font-weight:400;
+    color:var(--stone);
+    font-size:.75rem;
+  }
+  .ft-body{flex:1;}
+  .ft-loc{font-weight:600;font-size:.95rem;}
+  .ft-windows{margin-top:5px;display:flex;flex-wrap:wrap;gap:6px;}
+  .win{
+    font-size:.78rem;
+    background:#f1ece0;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:4px 9px;
+  }
+  .win b{color:var(--green-dark);}
+
+  /* Local curation */
+  .loc-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    margin-bottom:22px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .loc-head{
+    background:#eef1e9;
+    padding:14px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .loc-head h3{margin:0;color:var(--green-dark);font-size:1.15rem;}
+  .loc-head .dates{font-size:.76rem;color:var(--stone);}
+  .loc-head .dates b{color:var(--ink);}
+  .loc-sub{padding:10px 18px 0;font-size:.85rem;color:#5c6459;font-style:italic;}
+  .cat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+    padding:14px 18px 18px;
+  }
+  .cat-col h4{
+    margin:0 0 8px;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    padding-bottom:6px;
+    border-bottom:2px solid currentColor;
+  }
+  .cat-col.nature h4{color:var(--nature);}
+  .cat-col.historic h4{color:var(--historic);}
+  .cat-col.food h4{color:var(--food);}
+  .pick{margin-bottom:11px;}
+  .pick .pname{font-weight:700;font-size:.88rem;color:var(--ink);}
+  .pick .pmeta{font-size:.72rem;color:var(--stone);margin:1px 0 3px;}
+  .pick .pdesc{font-size:.82rem;color:#414a3d;}
+  @media (max-width:820px){
+    .cat-grid{grid-template-columns:1fr;}
+    .cat-col{margin-bottom:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Scotland Revealed 2026 — Trip Dashboard</h1>
+  <p>Linda &amp; Paul Rieger · O.A.T. Reservation #3694397 · Sept 18 – Oct 15, 2026 · Hebrides Pre-Trip → Main Adventure → Shetland Post-Trip</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="schedule">Master Schedule</button>
+  <button class="tab-btn" data-tab="freetime">Free Time Finder</button>
+  <button class="tab-btn" data-tab="curation">Local Curation</button>
+</div>
+
+<main>
+
+  <!-- ============ TAB 1: MASTER SCHEDULE ============ -->
+  <section id="schedule" class="panel active">
+    <div class="note">Dates are calculated from your invoice's segment check-in dates and the day-to-day itinerary sequence — OAT itself labels the whole document "Subject to Change," so treat these as accurate-but-unofficial until your Final Documents arrive (10–14 days before departure).</div>
+    <div id="scheduleContainer"></div>
+  </section>
+
+  <!-- ============ TAB 2: FREE TIME FINDER ============ -->
+  <section id="freetime" class="panel">
+    <div class="note">Every block the itinerary explicitly leaves open — "free to explore," "on your own," "at leisure," "free time." Meals/activities not listed here are pre-scheduled by OAT.</div>
+    <div id="freetimeContainer"></div>
+  </section>
+
+  <!-- ============ TAB 3: LOCAL CURATION ============ -->
+  <section id="curation" class="panel">
+    <div class="note">Grouped by base city — pick a different option each time you pass back through, since most towns get 2–3 free windows across the trip. Distances/times are walking unless noted.</div>
+    <div id="curationContainer"></div>
+  </section>
+
+</main>
+
+<script>
+// ---------- DATA ----------
+const days = [
+  {date:"Fri, Sep 18",seg:"Pre-Trip · Day 1",loc:"In transit",hotel:"—",summary:"Depart U.S. on overnight flight to Inverness.",free:[]},
+  {date:"Sat, Sep 19",seg:"Pre-Trip · Day 2",loc:"Nairn",hotel:"Muthu Newton Hotel",summary:"Arrive Inverness; overland to Nairn on the Moray Firth.",free:[{p:"Evening",note:"Free to explore Nairn on your own"}]},
+  {date:"Sun, Sep 20",seg:"Pre-Trip · Day 3",loc:"Portree",hotel:"Marmalade Hotel",summary:"Overland to Portree, Isle of Skye (~5 hrs).",free:[{p:"Evening",note:"Free to explore Portree on your own"}]},
+  {date:"Mon, Sep 21",seg:"Pre-Trip · Day 4",loc:"Portree",hotel:"Marmalade Hotel",summary:"Guided Isle of Skye tour incl. St Columba's Isle, Columba 1400.",free:[{p:"Afternoon",note:"Free time back in Portree"},{p:"Evening",note:"Free to explore on your own"}]},
+  {date:"Tue, Sep 22",seg:"Pre-Trip · Day 5",loc:"Stornoway",hotel:"Stornoway Bed and Breakfast",summary:"Ferry to the Outer Hebrides (Harris & Lewis).",free:[{p:"Afternoon",note:"Free time on arrival in Stornoway"},{p:"Evening",note:"Free to make your own discoveries"}]},
+  {date:"Wed, Sep 23",seg:"Pre-Trip · Day 6",loc:"Stornoway",hotel:"Stornoway Bed and Breakfast",summary:"Callanish Standing Stones, blackhouse village, weaving demo.",free:[{p:"Afternoon",note:"Free time after the weaving demonstration"},{p:"Evening",note:"On your own"}]},
+  {date:"Thu, Sep 24",seg:"Pre-Trip · Day 7",loc:"Stornoway",hotel:"Stornoway Bed and Breakfast",summary:"Meet a guga hunter; walk Lews Castle grounds.",free:[{p:"Afternoon",note:"Rest of the afternoon free"},{p:"Evening",note:"Free to retire or venture out"}]},
+  {date:"Fri, Sep 25",seg:"Pre-Trip · Day 8 / Main · Day 2",loc:"Glasgow",hotel:"Apex City of Glasgow Hotel",summary:"Fly Stornoway→Glasgow; join the main trip group.",free:[{p:"Afternoon",note:"Free time after orientation walk"},{p:"Evening",note:"Free — hotel bar or explore nightlife"}]},
+  {date:"Sat, Sep 26",seg:"Main · Day 3",loc:"Glasgow",hotel:"Apex City of Glasgow Hotel",summary:"Panoramic tour: West End, Glasgow Cathedral, the Necropolis.",free:[{p:"Afternoon",note:"Free before Willow Tea Room walk / Welcome Briefing"},{p:"Evening",note:"Free after Welcome Dinner"}]},
+  {date:"Sun, Sep 27",seg:"Main · Day 4",loc:"Glasgow",hotel:"Apex City of Glasgow Hotel",summary:"Robert Burns sites in Alloway; Soul Food Sisters lunch; Home-Hosted Dinner.",free:[{p:"Afternoon",note:"A few free hours before Home-Hosted Dinner"},{p:"Evening",note:"Free after dinner"}]},
+  {date:"Mon, Sep 28",seg:"Main · Day 5",loc:"Oban",hotel:"The Scot",summary:"Highlands hike; Glencoe Visitors' Center; drive to Oban.",free:[{p:"Evening",note:"Free to make your own discoveries"}]},
+  {date:"Tue, Sep 29",seg:"Main · Day 6",loc:"Oban",hotel:"The Scot",summary:"\"A Day in the Life\" of a Highland cattle farm, Argyll.",free:[{p:"Afternoon",note:"Remainder of the afternoon free"},{p:"Evening",note:"Free — relax or find a local pub"}]},
+  {date:"Wed, Sep 30",seg:"Main · Day 7",loc:"Oban",hotel:"The Scot",summary:"Two ferries to the Isle of Iona; guided tour of Iona Abbey.",free:[{p:"Evening",note:"Free to pursue your own interests"}]},
+  {date:"Thu, Oct 1",seg:"Main · Day 8",loc:"Inverness",hotel:"Glen Mhor Hotel Inverness",summary:"Overland to Inverness via Fort Augustus; Urquhart Castle.",free:[{p:"Afternoon",note:"Free time settling in before orientation walk"},{p:"Evening",note:"Free to make your own discoveries"}]},
+  {date:"Fri, Oct 2",seg:"Main · Day 9",loc:"Inverness",hotel:"Glen Mhor Hotel Inverness",summary:"Culloden Battlefield; included whisky tasting at The Malt Room.",free:[{p:"Afternoon",note:"Independent exploring before the whisky tasting"},{p:"Evening",note:"Free — pack or find a pub"}]},
+  {date:"Sat, Oct 3",seg:"Main · Day 10",loc:"Dundee",hotel:"Apex City Quay Hotel & Spa",summary:"Cairngorms hike near Dunkeld; Scone Palace; drive to Dundee.",free:[{p:"Evening",note:"Remainder of the evening is yours"}]},
+  {date:"Sun, Oct 4",seg:"Main · Day 11",loc:"Dundee",hotel:"Apex City Quay Hotel & Spa",summary:"Guided walking tour of St Andrews (Old Course, Cathedral, University).",free:[{p:"Afternoon",note:"Rest of the day free to relax/explore Dundee"},{p:"Evening",note:"Free for you to do as you'd like"}]},
+  {date:"Mon, Oct 5",seg:"Main · Day 12",loc:"Edinburgh",hotel:"Wilde Aparthotels Edinburgh Grassmarket",summary:"Visit a local Scottish estate (bagpiper, tweed, land management); drive to Edinburgh.",free:[{p:"Afternoon",note:"Free time settling in before orientation walk"},{p:"Evening",note:"Free — return to hotel or enjoy nightlife"}]},
+  {date:"Tue, Oct 6",seg:"Main · Day 13",loc:"Edinburgh",hotel:"Wilde Aparthotels Edinburgh Grassmarket",summary:"Guided Old Town/New Town tour, Royal Mile, Edinburgh Castle.",free:[{p:"Afternoon",note:"Free to relax/explore, or join optional Taste of Scotland tour"},{p:"Evening",note:"Free — dinner on your own"}]},
+  {date:"Wed, Oct 7",seg:"Main · Day 14",loc:"Edinburgh",hotel:"Wilde Aparthotels Edinburgh Grassmarket",summary:"Royal Yacht Britannia in Leith via local transit.",free:[{p:"Afternoon",note:"A few hours to rest or do last-minute sightseeing"},{p:"Evening",note:"Final night free (Farewell Dinner is included, then free)"}]},
+  {date:"Thu, Oct 8",seg:"Main · Day 15",loc:"Edinburgh → Shetland",hotel:"—",summary:"Fly home, or begin the Shetland post-trip extension.",free:[]},
+  {date:"Fri, Oct 9",seg:"Post-Trip · Day 1",loc:"Lerwick",hotel:"Glen Orchy House",summary:"Fly to Shetland; stop at Nielanell knitwear studio; arrive Lerwick.",free:[{p:"Evening",note:"Free to continue discovering Lerwick"}]},
+  {date:"Sat, Oct 10",seg:"Post-Trip · Day 2",loc:"Lerwick",hotel:"Glen Orchy House",summary:"Ferry to Bressay for a working croft/sheep farm visit.",free:[{p:"Afternoon",note:"Remainder of the afternoon on your own"},{p:"Evening",note:"Free — ask your guide for tips"}]},
+  {date:"Sun, Oct 11",seg:"Post-Trip · Day 3",loc:"Lerwick",hotel:"Glen Orchy House",summary:"Shetland pony croft; Sumburgh Head cliffs (puffins/seals in season).",free:[{p:"Evening",note:"At your leisure"}]},
+  {date:"Mon, Oct 12",seg:"Post-Trip · Day 4",loc:"Lerwick",hotel:"Glen Orchy House",summary:"Eshaness cliffs; Sullom Voe oil terminal; Delting Galley Shed (Up Helly Aa).",free:[{p:"Evening",note:"Free to make your own discoveries"}]},
+  {date:"Tue, Oct 13",seg:"Post-Trip · Day 5",loc:"Edinburgh (Airport)",hotel:"DoubleTree by Hilton Edinburgh Airport",summary:"Fly Shetland→Edinburgh; group Farewell Dinner.",free:[]},
+  {date:"Wed, Oct 14",seg:"Post-Trip · Day 6 / Stopover",loc:"London (LHR)",hotel:"Your own arrangement",summary:"Self-arranged stopover in London before final return (per your customized air).",free:[{p:"Day",note:"Fully open — your own arrangements, transfers & hotel"}]},
+  {date:"Thu, Oct 15",seg:"Return",loc:"→ SFO",hotel:"—",summary:"Fly home.",free:[]},
+];
+
+// ---------- RENDER: MASTER SCHEDULE ----------
+const segOrder = [];
+const scheduleEl = document.getElementById("scheduleContainer");
+(function renderSchedule(){
+  let rows = "";
+  let currentGroup = "";
+  const groups = {"Pre-Trip":[], "Main":[], "Post-Trip":[], "Other":[]};
+  days.forEach(d=>{
+    if(d.seg.startsWith("Pre-Trip")) groups["Pre-Trip"].push(d);
+    else if(d.seg.startsWith("Main")) groups["Main"].push(d);
+    else if(d.seg.startsWith("Post-Trip")) groups["Post-Trip"].push(d);
+    else groups["Other"].push(d);
+  });
+  const titles = {"Pre-Trip":"Pre-Trip Extension — The Gaelic Island Culture of the Scottish Hebrides","Main":"Main Adventure — Scotland Revealed: Legends, Lochs & Highland Landscapes","Post-Trip":"Post-Trip Extension — The Remote Shetlands","Other":"Transit / Travel Days"};
+  let html = "";
+  Object.keys(titles).forEach(key=>{
+    if(groups[key].length===0) return;
+    html += `<div class="segment-heading">${titles[key]}</div>`;
+    html += `<table><thead><tr><th>Date</th><th>Day</th><th>Location</th><th>Hotel</th><th>Highlights</th><th>Free Time</th></tr></thead><tbody>`;
+    groups[key].forEach(d=>{
+      const chips = d.free.map(f=>`<span class="free-chip ${f.p.toLowerCase()==='evening'?'evening':''}">${f.p}</span>`).join("");
+      html += `<tr><td>${d.date}</td><td>${d.seg.split('·')[1]||d.seg}</td><td><b>${d.loc}</b></td><td>${d.hotel}</td><td>${d.summary}</td><td>${chips||'<span style="color:var(--stone)">—</span>'}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+  });
+  scheduleEl.innerHTML = html;
+})();
+
+// ---------- RENDER: FREE TIME FINDER ----------
+(function renderFreeTime(){
+  const el = document.getElementById("freetimeContainer");
+  let html = "";
+  days.filter(d=>d.free.length>0).forEach(d=>{
+    const windows = d.free.map(f=>`<span class="win"><b>${f.p}:</b> ${f.note}</span>`).join("");
+    html += `<div class="ft-card">
+      <div class="ft-date">${d.date}<span>${d.seg}</span></div>
+      <div class="ft-body">
+        <div class="ft-loc">${d.loc}</div>
+        <div class="ft-windows">${windows}</div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+})();
+
+// ---------- DATA: LOCAL CURATION ----------
+const curation = [
+  {
+    key:"Nairn", sub:"One evening only — stay close to town.",
+    picks:{
+      nature:[
+        {n:"Nairn Beach & West Beach Dunes", m:"10 min walk", d:"Wide sandy beach on the Moray Firth; walk the dune path at sunset and watch for bottlenose dolphins offshore."},
+        {n:"Nairn River Walk (Riverside Path)", m:"15 min walk", d:"Easy flat path along the River Nairn from the harbour, quieter and greener than the seafront."},
+        {n:"Culbin Forest / Culbin Sands", m:"15 min drive", d:"A planted forest swallowing a buried village, with dramatic dune trails opening onto the firth — best with a bit of daylight left."}
+      ],
+      historic:[
+        {n:"Cawdor Castle grounds", m:"15 min drive", d:"Shakespeare's Thane-of-Cawdor connection; the gardens stay atmospheric even after the castle itself closes for the day."},
+        {n:"Nairn Fishertown Museum area", m:"10 min walk", d:"Wander the old fishertown lanes near the harbour — narrow gable-end cottages built by 19th-century herring families."},
+        {n:"Nairn Courthouse & Regal cinema block", m:"5 min walk", d:"Handsome small-town Victorian civic architecture along the high street, good for an evening stroll."}
+      ],
+      food:[
+        {n:"Anderson's Bar & Grocer", m:"5 min walk", d:"Cozy pub-grocery hybrid with a strong whisky shelf and simple pub food — a genuine local favorite."},
+        {n:"The Classroom (Boath House)", m:"10 min drive", d:"Refined Highland dining in a Georgian country house if you want one special dinner on the pre-trip leg."},
+        {n:"Benromach Distillery, Forres", m:"20 min drive", d:"Small, characterful Speyside distillery with evening-friendly tasting slots if timing allows — worth calling ahead."}
+      ]
+    }
+  },
+  {
+    key:"Portree", sub:"Two evenings + one afternoon on Skye.",
+    picks:{
+      nature:[
+        {n:"Scorrybreac Coastal Path", m:"5 min walk from harbour", d:"A loop trail right out of town along the cliffs above the harbour — sea views without needing a car, ideal for a free evening."},
+        {n:"The Storr / Old Man of Storr", m:"20 min drive", d:"Skye's signature dramatic pinnacle hike; steep but short, and one of the most photographed landscapes in Scotland — go for late-afternoon light."},
+        {n:"The Fairy Glen, Uig", m:"30 min drive", d:"Surreal miniature green hillocks and a spiral stone tower — otherworldly and easy walking."}
+      ],
+      historic:[
+        {n:"Portree Harbour pastel houses", m:"In town", d:"The row of colorful 18th–19th century harbor buildings is Skye's most photographed streetscape — best at golden hour."},
+        {n:"Skye Museum of Island Life, Kilmuir", m:"35 min drive", d:"Cluster of thatched blackhouses showing crofting life, next to Flora MacDonald's grave."},
+        {n:"Aros Centre", m:"5 min drive", d:"Local cultural center with exhibits on Skye history and the '45 Rising — good rainy-evening option."}
+      ],
+      food:[
+        {n:"Talisker Distillery, Carbost", m:"35 min drive", d:"Skye's only whisky distillery, on the shore of Loch Harport — a proper dram-with-a-view if your afternoon window allows the drive."},
+        {n:"The Oyster Shed, near Carbost", m:"35 min drive", d:"Working shellfish farm shack — about as fresh as seafood gets, eaten at picnic tables over the water."},
+        {n:"Isles Inn or Café Sia, Portree", m:"In town", d:"Isles Inn is a proper old-town pub for a dram; Café Sia does excellent seafood if you'd rather stay in town."}
+      ]
+    }
+  },
+  {
+    key:"Stornoway", sub:"Three evenings + two afternoons — the most free time of the trip.",
+    picks:{
+      nature:[
+        {n:"Lews Castle Grounds, deeper trails", m:"10 min walk", d:"You'll see the front lawns on tour — the woodland paths along the River Creed further in are quieter and worth extending into."},
+        {n:"Eye Peninsula (An Rubha) coastal walk", m:"15 min drive", d:"A narrow, dramatic finger of land with cliffside walking and Tiumpan Head lighthouse at the tip."},
+        {n:"Bostadh Beach / Uig Sands", m:"45 min drive", d:"If you have a full free afternoon, this turquoise-water beach on the west coast is one of the Hebrides' best-kept scenic secrets."}
+      ],
+      historic:[
+        {n:"Museum nan Eilean, Lews Castle", m:"10 min walk", d:"Houses the story of the Lewis Chessmen (replicas; originals are in London/Edinburgh) and Hebridean history."},
+        {n:"St Columba's Old Parish Church ruins", m:"15 min walk", d:"Medieval ruin on the shore, one of the oldest Christian sites in the Western Isles."},
+        {n:"Gearrannan Blackhouse Village", m:"40 min drive", d:"A restored thatched crofting village right on the Atlantic — worth it if an afternoon window is long enough."}
+      ],
+      food:[
+        {n:"The Digby Chick", m:"5 min walk", d:"Stornoway's best-known restaurant — excellent local seafood and Hebridean lamb, book ahead."},
+        {n:"Isle of Harris Distillery, Tarbert", m:"40 min drive", d:"The award-winning \"Social Distillery\" and its Isle of Harris Gin — a stretch for an evening but doable on a longer afternoon."},
+        {n:"An Lanntair Arts Centre café/bar", m:"5 min walk", d:"Waterfront arts center with a relaxed bar, local ales, and often live Gaelic music."}
+      ]
+    }
+  },
+  {
+    key:"Glasgow", sub:"Three afternoons + three evenings across the trip's opening days.",
+    picks:{
+      nature:[
+        {n:"Kelvingrove Park & River Kelvin", m:"15 min walk/taxi from Apex", d:"Glasgow's green heart — sweeping Victorian park paths along the river, next to the university's Gothic skyline."},
+        {n:"Glasgow Green & the People's Palace", m:"10 min walk", d:"The city's oldest park, on the Clyde, with the Doulton Fountain and views back toward the Merchant City."},
+        {n:"Pollok Country Park", m:"20 min drive/taxi", d:"Woodland trails and Highland cattle grazing within the city — a surprising escape, home to the Burrell Collection."}
+      ],
+      historic:[
+        {n:"The Lighthouse (Mackintosh Centre)", m:"10 min walk", d:"Charles Rennie Mackintosh's first public building, now Scotland's design center — climb the helical staircase for city views."},
+        {n:"Mackintosh at the Willow", m:"10 min walk", d:"An extension of your Day 3 stop — the restored tea rooms are worth lingering in rather than just passing through."},
+        {n:"Glasgow University cloisters & tower", m:"20 min walk/taxi", d:"Gothic Revival quadrangles that feel lifted from Oxford — free to wander, especially atmospheric at dusk."}
+      ],
+      food:[
+        {n:"The Pot Still", m:"10 min walk", d:"Legendary whisky pub with 700+ single malts — as serious a dram education as you'll find anywhere."},
+        {n:"Ubiquitous Chip, Ashton Lane", m:"15 min walk/taxi", d:"Glasgow institution for modern Scottish cooking, tucked in a cobbled lane full of bars."},
+        {n:"Òran Mór", m:"15 min walk/taxi", d:"A converted 19th-century church turned bar/venue — dramatic painted ceiling, great whisky list, occasional live music."}
+      ]
+    }
+  },
+  {
+    key:"Oban", sub:"Three evenings + one afternoon on the west coast.",
+    picks:{
+      nature:[
+        {n:"McCaig's Tower hilltop walk", m:"10 min walk (uphill)", d:"An unfinished Colosseum-style folly above town — the short climb rewards with the best sunset view over the bay and islands."},
+        {n:"Pulpit Hill viewpoint", m:"15 min walk", d:"Quieter than McCaig's Tower with an equally dramatic panorama over Oban Bay and Kerrera."},
+        {n:"Ganavan Sands", m:"20 min walk / 5 min drive", d:"A crescent beach just north of town with a flat coastal path — good for a low-key evening stroll."}
+      ],
+      historic:[
+        {n:"Dunollie Castle & Museum", m:"20 min walk along the shore", d:"Seat of Clan MacDougall since the 1200s, still lived in — walk the shore path from town to reach it."},
+        {n:"McCaig's Tower", m:"10 min walk", d:"Also a historic curiosity in its own right — an eccentric 1897 folly built to give local stonemasons winter work."},
+        {n:"Oban War & Peace Museum", m:"5 min walk", d:"Small free museum on the harbourfront covering Oban's role in both World Wars."}
+      ],
+      food:[
+        {n:"Oban Distillery", m:"5 min walk", d:"One of Scotland's oldest working distilleries, right in the town center — evening tastings are sometimes available, worth checking on arrival."},
+        {n:"Oban Seafood Hut (the Green Shack)", m:"5 min walk", d:"A pier-side kiosk locals swear by for the freshest oysters, langoustines, and dressed crab in town."},
+        {n:"Ee-Usk", m:"5 min walk", d:"Glass-fronted seafood restaurant right on the harbour — order the seafood platter and watch the ferries come in."}
+      ]
+    }
+  },
+  {
+    key:"Inverness", sub:"Two afternoons + two evenings, capital of the Highlands.",
+    picks:{
+      nature:[
+        {n:"Ness Islands walk", m:"15 min walk", d:"Wooded river islands linked by Victorian footbridges — one of the nicest free strolls in any Scottish city."},
+        {n:"Craig Phadrig hillfort", m:"20 min walk/taxi", d:"Forested climb to an Iron Age hillfort with views over the Beauly Firth."},
+        {n:"Ness Bank riverside path to the Castle", m:"10 min walk", d:"Flat riverside walk with the best photo angle of Inverness Castle across the water."}
+      ],
+      historic:[
+        {n:"Inverness Castle viewpoint", m:"10 min walk", d:"The current castle is 19th-century (working courts building historically), but the terrace view over the Ness is worth the stop."},
+        {n:"Old High Church & burial ground", m:"10 min walk", d:"Site of the city's oldest church, with a graveyard used to hold Jacobite prisoners after Culloden."},
+        {n:"St Andrew's Cathedral", m:"10 min walk", d:"Riverside Victorian Gothic cathedral, usually open and peaceful in the early evening."}
+      ],
+      food:[
+        {n:"Hootananny", m:"10 min walk", d:"The city's best live folk/trad music pub — good odds of a proper session most nights, solid whisky selection too."},
+        {n:"Black Isle Bar", m:"10 min walk", d:"Organic craft brewery taproom, a good change of pace from whisky if you want a local ale instead."},
+        {n:"Café 1 / The Kitchen Brasserie", m:"10 min walk", d:"Well-regarded Scottish bistro cooking for a sit-down dinner on your own evening."}
+      ]
+    }
+  },
+  {
+    key:"Dundee", sub:"One evening + one afternoon, plus the St Andrews day trip.",
+    picks:{
+      nature:[
+        {n:"Dundee Law", m:"15 min drive/taxi", d:"An extinct volcanic plug with a war memorial at the summit — 360° views over the Tay and, on clear days, to the Highlands."},
+        {n:"Broughty Ferry beach & esplanade", m:"15 min drive/taxi", d:"A sandy beach walk past a 15th-century castle, in a charming seaside suburb popular with locals."},
+        {n:"Riverside Nature Park", m:"10 min walk", d:"Reclaimed Tay-side wetlands right near the Discovery Point/V&A waterfront — easy flat walking with birdlife."}
+      ],
+      historic:[
+        {n:"Discovery Point & RRS Discovery", m:"10 min walk", d:"Captain Scott's actual Antarctic expedition ship, permanently berthed on the waterfront."},
+        {n:"Broughty Ferry Castle", m:"15 min drive/taxi", d:"Small 15th-century fortified tower right on the Tay estuary, now a free local history museum."},
+        {n:"V&A Dundee", m:"10 min walk", d:"Kengo Kuma's striking cliff-inspired design museum building — worth seeing even just from outside at night, when it's lit."}
+      ],
+      food:[
+        {n:"The Bach", m:"10 min walk", d:"Small, well-curated whisky and cocktail bar in the city center, a good low-key evening spot."},
+        {n:"Draffens Bar", m:"10 min walk", d:"Classic Dundee pub in a converted department store building, popular with locals."},
+        {n:"Tayberry Restaurant, Broughty Ferry", m:"15 min drive/taxi", d:"One of the region's best fine-dining rooms if you want a special dinner out on your free evening."}
+      ]
+    }
+  },
+  {
+    key:"Edinburgh", sub:"Three afternoons + three evenings — the most curation-worthy stretch of the trip.",
+    picks:{
+      nature:[
+        {n:"Arthur's Seat", m:"20 min walk to base", d:"An extinct volcano inside the city — the main hike is steep but under an hour round-trip, with the best skyline views in Edinburgh; go earlier in your free window to allow for weather."},
+        {n:"Dean Village & Water of Leith Walkway", m:"15 min taxi", d:"A fairy-tale former milling village tucked below street level, with a flat riverside path toward the Modern Art Gallery."},
+        {n:"Calton Hill", m:"15 min walk from Grassmarket", d:"Shorter and easier than Arthur's Seat, with Greek Revival monuments and a classic postcard view down the length of the Old Town — great for a sunset evening walk."}
+      ],
+      historic:[
+        {n:"The Real Mary King's Close", m:"10 min walk", d:"A preserved 17th-century underground street sealed beneath the Royal Mile — book ahead, it's popular."},
+        {n:"St Giles' Cathedral", m:"10 min walk", d:"The Old Town's great medieval kirk with its crown-shaped spire, usually open into the evening for a quiet look inside."},
+        {n:"Dean Cemetery", m:"15 min taxi", d:"An atmospheric Victorian cemetery full of elaborate monuments, near Dean Village — an unusual, peaceful historic wander."}
+      ],
+      food:[
+        {n:"The Scotch Whisky Experience", m:"10 min walk", d:"Right by the Castle esplanade — a fast, well-done tasting tour if you want a structured whisky primer."},
+        {n:"Café Royal Circle Bar", m:"15 min walk", d:"Ornate Victorian pub with tiled portraits and an oyster bar — one of the city's classic historic interiors."},
+        {n:"The Devil's Advocate", m:"10 min walk", d:"Whisky bar in a converted Old Town close with several hundred bottles and good small plates."}
+      ]
+    }
+  },
+  {
+    key:"Lerwick", sub:"Four evenings + one afternoon on Shetland.",
+    picks:{
+      nature:[
+        {n:"Ness of Sound coastal walk", m:"20 min walk", d:"A quiet headland walk south of town with views across to Bressay — good for an evening stretch of the legs."},
+        {n:"Clickimin Broch loop", m:"15 min walk", d:"An Iron Age broch tower sitting on its own loch, with an easy walking path around the water — dramatic and completely uncrowded."},
+        {n:"Sumburgh Head revisited", m:"25 min drive", d:"You'll tour it on Day 3, but it's worth a second look in different evening light if you have a car/taxi and the puffins are still around (May–Jul peak)."}
+      ],
+      historic:[
+        {n:"Clickimin Broch", m:"15 min walk", d:"One of the best-preserved Iron Age broch towers in Shetland, free to explore and rarely busy."},
+        {n:"Shetland Museum & Archives", m:"5 min walk", d:"Excellent, well-curated museum on Shetland's Norse and maritime history, right on the waterfront."},
+        {n:"Fort Charlotte", m:"5 min walk", d:"A compact 17th-century artillery fort overlooking Lerwick harbour, free to walk around."}
+      ],
+      food:[
+        {n:"Fjarå Café Bar", m:"5 min walk", d:"Modern waterfront spot with big windows over the sea — good coffee by day, cocktails and local ales by evening."},
+        {n:"The Lounge Bar", m:"5 min walk", d:"Traditional Lerwick pub known for spontaneous folk/fiddle sessions — a proper Shetland evening."},
+        {n:"Hay's Dock Café Restaurant", m:"5 min walk", d:"Attached to the museum, strong on local Shetland lamb and seafood for a sit-down dinner."}
+      ]
+    }
+  }
+];
+
+// ---------- RENDER: LOCAL CURATION ----------
+(function renderCuration(){
+  const el = document.getElementById("curationContainer");
+  let html = "";
+  curation.forEach(loc=>{
+    // compute matching dates from days[]
+    const matches = days.filter(d=>d.loc===loc.key && d.free.length>0);
+    const dateChips = matches.map(d=>`<b>${d.date}</b> (${d.free.map(f=>f.p).join(" + ")})`).join(" &nbsp;·&nbsp; ");
+
+    function col(catKey, label, cls){
+      const items = loc.picks[catKey].map(p=>`
+        <div class="pick">
+          <div class="pname">${p.n}</div>
+          <div class="pmeta">${p.m}</div>
+          <div class="pdesc">${p.d}</div>
+        </div>`).join("");
+      return `<div class="cat-col ${cls}"><h4>${label}</h4>${items}</div>`;
+    }
+
+    html += `<div class="loc-card">
+      <div class="loc-head">
+        <h3>${loc.key}</h3>
+        <div class="dates">${dateChips}</div>
+      </div>
+      <div class="loc-sub">${loc.sub}</div>
+      <div class="cat-grid">
+        ${col("nature","Nature / Scenic Walks","nature")}
+        ${col("historic","Historic / Architectural","historic")}
+        ${col("food","Food, Distilleries &amp; Pubs","food")}
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+})();
+
+// ---------- TABS ----------
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+  });
+});
+</script>
+
+</body>
+</html>
