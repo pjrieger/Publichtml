@@ -1,2 +1,2 @@
-# Publichtml
+# public
 for publishing html files
