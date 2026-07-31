@@ -1,271 +1,565 @@
+<!--
+  ARBP Adaptive Cycling Patrol Guide
+  Date: August 1, 2026
+  Version: 1.1
+  Changelog:
+  - Version 1.1: Converted theme to black/gray text on white background for print efficiency. Added PDF handout link on Slide 10. Updated footer tags to Version 1.1.
+  - Version 1.0: Initial briefing deck creation.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARBP Adaptive Cycling Patrol Guide</title>
-  <style>
-    :root {
-      --bg-color: #ffffff;
-      --card-bg: #ffffff;
-      --text-main: #000000;
-      --text-muted: #4b5563;
-      --accent-blue: #000000;
-      --accent-green: #000000;
-      --accent-red: #000000;
-      --button-bg: #000000;
-      --button-hover: #333333;
-      --border-color: #000000;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARBP Adaptive Cycling Briefing</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --accent-yellow: #000000;
+            --text-main: #111111;
+            --text-muted: #555555;
+            --border-color: #000000;
+            --button-bg: #111111;
+            --button-hover: #333333;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .deck-container {
-      width: 100%;
-      max-width: 900px;
-      min-height: 550px;
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      border: 2px solid var(--border-color);
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-    }
+        .presentation-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            min-height: 540px;
+            justify-content: space-between;
+            overflow: hidden;
+        }
 
-    .slide { display: none; }
-    .slide.active { display: block; }
+        .slide {
+            display: none;
+            padding: 40px 40px 20px 40px;
+            animation: fadeIn 0.3s ease-in-out;
+            flex-grow: 1;
+        }
 
-    h1 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 1rem; text-decoration: underline; }
-    h2 { font-size: 1.8rem; color: var(--text-main); margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
-    p { font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 1rem; }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    ul { margin-left: 20px; margin-bottom: 1rem; }
-    li { font-size: 1.05rem; line-height: 1.6; margin-bottom: 0.5rem; color: var(--text-main); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    strong { color: var(--text-main); font-weight: bold; }
-    .alert-text { color: var(--text-main); font-weight: bold; text-transform: uppercase; border: 1px solid #000; padding: 4px 8px; display: inline-block; margin-bottom: 10px; }
+        .slide-header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
 
-    /* Controls & Navigation */
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 2px solid var(--border-color);
-    }
+        .slide-header h2 {
+            color: var(--text-main);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
 
-    .nav-btn {
-      background-color: var(--button-bg);
-      color: #ffffff;
-      border: 1px solid #000000;
-      padding: 10px 20px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        .slide-content {
+            flex-grow: 1;
+        }
 
-    .nav-btn:hover { background-color: var(--button-hover); }
-    .nav-btn:disabled { background-color: #cccccc; color: #666666; border-color: #999999; cursor: not-allowed; }
+        .slide-content ul.main-list {
+            list-style: none;
+        }
 
-    .slide-number { font-size: 0.9rem; color: var(--text-muted); font-weight: bold; }
+        .slide-content ul.main-list > li {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            position: relative;
+            padding-left: 24px;
+        }
 
-    .pdf-button {
-      display: inline-block;
-      background-color: #ffffff;
-      color: #000000;
-      font-weight: bold;
-      padding: 14px 28px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 1.1rem;
-      margin-top: 15px;
-      border: 2px solid #000000;
-    }
+        .slide-content ul.main-list > li::before {
+            content: "•";
+            color: var(--text-main);
+            font-size: 1.8rem;
+            position: absolute;
+            left: 0;
+            top: -6px;
+        }
 
-    .pdf-button:hover {
-      background-color: #000000;
-      color: #ffffff;
-    }
+        .slide-content ul.sub-list {
+            list-style: none;
+            margin-top: 6px;
+            margin-left: 12px;
+        }
 
-    /* Print optimizations */
-    @media print {
-      body { background-color: #ffffff; padding: 0; }
-      .deck-container { border: none; width: 100%; max-width: 100%; padding: 0; }
-      .controls { display: none; }
-      .slide { display: block !important; page-break-after: always; margin-bottom: 40px; }
-    }
-  </style>
+        .slide-content ul.sub-list > li {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.4;
+        }
+
+        .slide-content ul.sub-list > li::before {
+            content: "-";
+            color: var(--text-muted);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .slide-footer-tag {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #cccccc;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-nav {
+            background-color: #ffffff;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background-color: var(--button-bg);
+            color: #ffffff;
+            border: 1px solid #000000;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .nav-btn:disabled {
+            background-color: #e5e5e5;
+            color: #888888;
+            border-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .pdf-button {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            margin-top: 12px;
+            border: 2px solid #000000;
+        }
+
+        .pdf-button:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        @media print {
+            body { background-color: #ffffff; padding: 0; }
+            .presentation-container { border: none; box-shadow: none; width: 100%; max-width: 100%; }
+            .footer-nav { display: none; }
+            .slide { display: block !important; page-break-after: always; margin-bottom: 40px; }
+            .slide-footer-tag { border-top: 1px solid #000000; color: #000000; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="deck-container">
+<div class="presentation-container">
 
-  <!-- SLIDE 1 -->
-  <div class="slide active" id="slide-1">
-    <h1>Adaptive Cycling Patrol Operations</h1>
-    <p><strong>American River Bike Patrol (ARBP)</strong> | Technical & First Response Protocol</p>
-    <hr style="border-color: #000000; margin: 20px 0;">
-    <ul>
-      <li><strong>Objective:</strong> Equip patrollers with essential medical, mechanical, and tactical awareness for supporting adaptive cyclists on the American River Parkway.</li>
-      <li><strong>Liaison Role:</strong> Technical assistance, rider advocacy, and NSP-aligned field protocols.</li>
-      <li><strong>Format:</strong> 10-slide action guide optimized for field reference.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 2 -->
-  <div class="slide" id="slide-2">
-    <h2>1. Introduction & Equipment Spectrum</h2>
-    <p>Adaptive cycles are specialized mobility devices engineered for specific rider physical profiles:</p>
-    <ul>
-      <li><strong>Handcycles:</strong> Hand-crank driven, 3-wheel configuration (lower-body paralysis or amputation).</li>
-      <li><strong>Recumbent Trikes:</strong> Seated position, lower center of gravity (balance, joint, or neurological support).</li>
-      <li><strong>e-Assist Modules:</strong> Hub or mid-drive motor augmentation (vital for fatigue and cardiac management).</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 3 -->
-  <div class="slide" id="slide-3">
-    <h2>2. Trail Clearance & Geometry</h2>
-    <p>Recognize physical limits of adaptive equipment on parkway trails:</p>
-    <ul>
-      <li><strong>Width:</strong> Recumbents/handcycles are wider (up to 36"+)—require extra passing buffer.</li>
-      <li><strong>Low Clearance:</strong> Derailleurs and hand-crank chainrings sit inches off the ground. Highly vulnerable to root strikes and gravel debris.</li>
-      <li><strong>Turning Radius:</strong> Wider turning arc; cannot pivot sharply or make rapid evasive maneuvers.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 4 -->
-  <div class="slide" id="slide-4">
-    <h2>3. Critical Medical Focus: Autonomic Dysreflexia</h2>
-    <p class="alert-text">⚠️ EMERGENCY PROTOCOL (Spinal Cord Injuries T-6 or above)</p>
-    <ul>
-      <li><strong>Trigger:</strong> Acute response to painful or noxious stimuli below the level of injury (e.g., full bladder, skin pressure, tight straps).</li>
-      <li><strong>Symptoms:</strong> Severe sudden headache, rapid high blood pressure, profuse sweating above injury level.</li>
-      <li><strong>Patrol Action:</strong> Sit rider upright immediately, locate/remove stimulus (loosen straps/clothing), request immediate ALS.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 5 -->
-  <div class="slide" id="slide-5">
-    <h2>4. Secondary Medical Considerations</h2>
-    <ul>
-      <li><strong>Altered Pain Sensation:</strong> Rider may not feel fractures, skin abrasions, or pressure sores resulting from a fall.</li>
-      <li><strong>Thermoregulation:</strong> Impaired ability to sweat or shiver below injury line; high risk for heat illness or hypothermia.</li>
-      <li><strong>Caregiver Coordination:</strong> Always communicate with riding partners or caregivers—they understand the rider’s baseline medical profile best.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 6 -->
-  <div class="slide" id="slide-6">
-    <h2>5. Trailside Mechanicals: In-Chassis Repair</h2>
-    <ul>
-      <li><strong>Immobile Riders:</strong> Many adaptive riders cannot dismount to allow bike flipping or standard maintenance.</li>
-      <li><strong>In-Chassis Repairs:</strong> Fix flats, adjust brakes, and reset chains while the rider remains strapped into the frame.</li>
-      <li><strong>Chain-Line Complexity:</strong> Handcycles often use multi-stage chains or jackshafts. Inspect the entire drivetrain run for bound links.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 7 -->
-  <div class="slide" id="slide-7">
-    <h2>6. Mechanicals: Hydraulics & E-Systems</h2>
-    <ul>
-      <li><strong>Hydraulic Brakes:</strong> Frequent on trikes for high stopping power. Inspect lines for pinch points or fluid leaks after a rollover.</li>
-      <li><strong>E-Assist Diagnostics:</strong> Check battery seat connections and handlebar display wiring before assuming motor failure.</li>
-      <li><strong>Manual Release:</strong> Know how to disengage motor systems if e-trike power cuts out completely.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 8 -->
-  <div class="slide" id="slide-8">
-    <h2>7. Triage & Transfer Protocols</h2>
-    <ul>
-      <li><strong>Do Not Unstrap Unnecessarily:</strong> Custom seating harnesses and chest supports stabilize the torso. Do not unstrap unless medically required.</li>
-      <li><strong>Two-Person Assist:</strong> If transfer is necessary, assign one patroller for torso/head control and one for legs.</li>
-      <li><strong>Equipment Security:</strong> Adaptive bikes are high-value custom medical gear. Coordinate trail clearing/recovery carefully.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 9 -->
-  <div class="slide" id="slide-9">
-    <h2>8. ARBP Patrol Action Summary</h2>
-    <ul>
-      <li><strong>1. Assess:</strong> Identify cycle type, rider stability, and presence of spinal cord injuries.</li>
-      <li><strong>2. Protect:</strong> Secure scene; provide shade/warmth (thermoregulation awareness).</li>
-      <li><strong>3. Triage:</strong> Check for AD symptoms or unfelt injuries. Perform in-chassis fixes when possible.</li>
-      <li><strong>4. Coordinate:</strong> Involve riding partner and communicate equipment specifics to dispatch.</li>
-    </ul>
-  </div>
-
-  <!-- SLIDE 10 -->
-  <div class="slide" id="slide-10">
-    <h2>9. Resources & Field Handouts</h2>
-    <p>Access the complete field visual pack, including handcycle drivetrain flowcharts, triage guides, and equipment diagrams:</p>
-
-    <div style="text-align: center; margin: 30px 0;">
-      <a class="pdf-button"
-         href="2026.8.1%20-%20images%20for%20adaptive%20cycling%20ARBP%20presentation.pdf"
-         target="_blank">
-        📄 Open Field Handouts & Visuals (PDF)
-      </a>
+    <!-- Slide 1 -->
+    <div class="slide active">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 1: Introduction & Overview</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Session Purpose
+                        <ul class="sub-list">
+                            <li>Brief ARBP patrollers on adaptive cycling protocols along the American River Parkway.</li>
+                            <li>Prepare team for rising volume of handcycles, trikes, and e-assist adaptive cycles.</li>
+                        </ul>
+                    </li>
+                    <li>Key Topics Covered
+                        <ul class="sub-list">
+                            <li>Rider physical limitations and common equipment types.</li>
+                            <li>Solo rider expectations and safety checks.</li>
+                            <li>Specialized medical precautions and critical conditions.</li>
+                            <li>Common mechanical breakdowns and trailside repair etiquette.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
     </div>
 
-    <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
-      Clicking will open the PDF handout directly in a new tab. Save or print for patrol reference.
-    </p>
-  </div>
+    <!-- Slide 2 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 2: Physical Restrictions & Rider Profiles</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Spinal Cord Injuries (SCI)
+                        <ul class="sub-list">
+                            <li>Paraplegia or quadriplegia resulting in full lower-body paralysis.</li>
+                            <li>Zero trunk control requiring seat harnesses and lateral supports.</li>
+                        </ul>
+                    </li>
+                    <li>Amputations & Neurological Conditions
+                        <ul class="sub-list">
+                            <li>Cerebral palsy, stroke recovery, or missing limbs affecting balance.</li>
+                            <li>Spasticity or limited reach requiring single-sided handlebar controls.</li>
+                        </ul>
+                    </li>
+                    <li>Sensory & Cognitive Impairments
+                        <ul class="sub-list">
+                            <li>Visual impairment requiring tandem pilot guidance.</li>
+                            <li>Mild cognitive limitations requiring clear, direct verbal instructions.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">Previous</button>
-    <span class="slide-number" id="slideNum">Slide 1 of 10</span>
-    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next</button>
-  </div>
+    <!-- Slide 3 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 3: Common Parkway Equipment</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Arm-Powered Drivetrains
+                        <ul class="sub-list">
+                            <li>Handcycles (recumbent or knee-seated) driven by hand cranks.</li>
+                        </ul>
+                    </li>
+                    <li>3-Wheeled Recumbents
+                        <ul class="sub-list">
+                            <li>Tadpole (2 wheels front) and Delta (2 wheels rear) trikes.</li>
+                            <li>High stability with extremely low ground clearance.</li>
+                        </ul>
+                    </li>
+                    <li>Tandems & Power Assists
+                        <ul class="sub-list">
+                            <li>Adaptive tandems with sighted pilots upfront and stokers behind.</li>
+                            <li>E-assist mid-drive motors helping riders negotiate levee grades.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 4: Solo Adaptive Cyclists</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Trail Presence Reality
+                        <ul class="sub-list">
+                            <li>Disabled riders frequently cycle solo without support vehicles.</li>
+                            <li>High level of athletic independence on paved Parkway trails.</li>
+                        </ul>
+                    </li>
+                    <li>Trailside Vulnerability
+                        <ul class="sub-list">
+                            <li>Incapable of self-extrication if tipped over or mechanically broken down.</li>
+                            <li>Incapable of walking to a trailhead if stranded.</li>
+                        </ul>
+                    </li>
+                    <li>Patrol Action Protocol
+                        <ul class="sub-list">
+                            <li>Always perform a verbal pass-by check: "Patrol check—all good or need help?"</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 5: Medical Precautions vs. Able-Bodied</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Altered Pain Feedback
+                        <ul class="sub-list">
+                            <li>SCI riders feel zero pain below their level of spinal injury.</li>
+                            <li>Must perform thorough visual inspections for bleeding, road rash, or fractures.</li>
+                        </ul>
+                    </li>
+                    <li>Equipment & Bracing Protection
+                        <ul class="sub-list">
+                            <li>Custom orthoses, braces, and prosthetics are molded medical devices.</li>
+                            <li>Do not remove prosthetics or braces unless life safety demands it.</li>
+                        </ul>
+                    </li>
+                    <li>Baseline Mental Status
+                        <ul class="sub-list">
+                            <li>Check with on-scene caregivers to establish baseline mental response.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 6: Critical Alert: Autonomic Dysreflexia (AD)</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>High-Risk Population
+                        <ul class="sub-list">
+                            <li>Occurs in cyclists with spinal cord injuries at or above the T-6 level.</li>
+                        </ul>
+                    </li>
+                    <li>Triggers & Physiological Root
+                        <ul class="sub-list">
+                            <li>Caused by unseen painful stimuli below injury line (pinched skin, full bladder, tight harness).</li>
+                            <li>Triggers uncontrolled sympathetic reflex causing dangerous blood pressure spikes.</li>
+                        </ul>
+                    </li>
+                    <li>Symptoms & Patrol Response
+                        <ul class="sub-list">
+                            <li>Symptoms: Severe headache, facial flushing, chest sweating, goosebumps.</li>
+                            <li>Action: Treat as Hurry Case -> Sit rider upright -> Remove tight straps/pinches -> Call 911.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 7: Common Mechanical Breakdowns</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Low Drivetrain Clearance
+                        <ul class="sub-list">
+                            <li>Recumbent rear derailleurs sit inches off asphalt, striking debris and gravel.</li>
+                        </ul>
+                    </li>
+                    <li>Extended Chain Systems
+                        <ul class="sub-list">
+                            <li>Double or triple-length chains drop, twist, or break under heavy hand-crank load.</li>
+                        </ul>
+                    </li>
+                    <li>Complex Steering Assemblies
+                        <ul class="sub-list">
+                            <li>Combined steering, shifting, and braking on moving handlebar clusters lose tension.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 8 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 8: Trailside Seated Repairs</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>In-Chassis Repair Workflow
+                        <ul class="sub-list">
+                            <li>Perform tube changes, chain fixes, and adjustments while rider remains seated.</li>
+                            <li>Avoid transferring rider unless chassis frame is completely destroyed.</li>
+                        </ul>
+                    </li>
+                    <li>Vehicle Stabilization
+                        <ul class="sub-list">
+                            <li>Lock parking brakes or block wheels before touching drivetrain.</li>
+                            <li>Never tip or tilt a trike while rider is strapped inside.</li>
+                        </ul>
+                    </li>
+                    <li>Verbal Clearance
+                        <ul class="sub-list">
+                            <li>Explicitly ask: "May I hold your frame or work on your drive wheel?"</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 9 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 9: Patrol Etiquette & Care Refusal</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>Communication Etiquette
+                        <ul class="sub-list">
+                            <li>Speak directly to the cyclist rather than addressing only their caregiver.</li>
+                            <li>Respect athlete's knowledge of their own custom machinery.</li>
+                        </ul>
+                    </li>
+                    <li>Refusal of Assistance (PBJ)
+                        <ul class="sub-list">
+                            <li>Apply Patroller’s Best Judgment if an injured rider refuses medical care.</li>
+                            <li>Step back, monitor safely from a distance, and secure witness signatures on refusal cards.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Slide 10 -->
+    <div class="slide">
+        <div>
+            <div class="slide-header">
+                <h2>Slide 10: Summary & Checklist</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="main-list">
+                    <li>4-Point Operational Summary
+                        <ul class="sub-list">
+                            <li>Expect solo riders: Perform regular verbal check-ins on trail.</li>
+                            <li>Inspect visually: Do not rely on pain feedback for SCI riders.</li>
+                            <li>Watch for AD: Sit upright and remove tight straps if T-6 rider shows flushing/headache.</li>
+                            <li>Fix in place: Work on mechanicals with rider strapped in chassis.</li>
+                        </ul>
+                    </li>
+                    <li>Field Reference Handout
+                        <ul class="sub-list">
+                            <li>Access visual diagrams, drivetrain flowcharts, and equipment reference guides:</li>
+                        </ul>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <a class="pdf-button" href="2026.8.1%20-%20images%20for%20adaptive%20cycling%20ARBP%20presentation.pdf" target="_blank">
+                                📄 Open Field Handouts & Visuals (PDF)
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-footer-tag">ARBP Adaptive Cycling - 2026.8.1 - Version 1.1</div>
+    </div>
+
+    <!-- Footer / Navigation -->
+    <div class="footer-nav">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">Previous</button>
+        <div class="slide-counter" id="counter">Slide 1 of 10</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next</button>
+    </div>
 
 </div>
 
 <script>
-  let currentSlide = 1;
-  const totalSlides = 10;
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-  function showSlide(index) {
-    for (let i = 1; i <= totalSlides; i++) {
-      document.getElementById(`slide-${i}`).classList.remove('active');
+    function updateSlide() {
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentSlide);
+        });
+        counter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
     }
-    document.getElementById(`slide-${index}`).classList.add('active');
 
-    document.getElementById('slideNum').innerText = `Slide ${index} of ${totalSlides}`;
-    document.getElementById('prevBtn').disabled = (index === 1);
-    document.getElementById('nextBtn').disabled = (index === totalSlides);
-  }
+    function changeSlide(direction) {
+        currentSlide += direction;
+        if (currentSlide < 0) currentSlide = 0;
+        if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+        updateSlide();
+    }
 
-  function changeSlide(step) {
-    currentSlide += step;
-    if (currentSlide < 1) currentSlide = 1;
-    if (currentSlide > totalSlides) currentSlide = totalSlides;
-    showSlide(currentSlide);
-  }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'Space') {
+            if (currentSlide < slides.length - 1) changeSlide(1);
+        } else if (e.key === 'ArrowLeft') {
+            if (currentSlide > 0) changeSlide(-1);
+        }
+    });
 
-  // Keyboard navigation
-  document.addEventListener('keydown', function(e) {
-    if (e.key === "ArrowRight") changeSlide(1);
-    if (e.key === "ArrowLeft") changeSlide(-1);
-  });
+    updateSlide();
 </script>
 
 </body>
